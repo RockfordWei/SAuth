@@ -215,6 +215,9 @@ func fileNotFound(req: HTTPRequest, resp: HTTPResponse) {
 }
 routes.add(uri: "/**", handler: fileNotFound)
 
-try HTTPServer.launch(.server(name: globalConfig.server.name, port: globalConfig.server.port, routes: routes))
+//try HTTPServer.launch(.server(name: globalConfig.server.name, port: globalConfig.server.port, routes: routes))
+try HTTPServer.launch(.secureServer(TLSConfiguration(certPath: globalConfig.server.certPath, keyPath: globalConfig.server.keyPath),
+                                    name: globalConfig.server.name, port: globalConfig.server.port, routes: routes))
+
 
 

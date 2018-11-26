@@ -32,6 +32,8 @@ struct Config: Codable {
 		let name: String
 		let privateKeyName: String
 		let publicKeyName: String
+    let certPath: String
+    let keyPath: String
 	}
 	struct SMTP: Codable {
 		let host: String
