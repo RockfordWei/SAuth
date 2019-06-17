@@ -214,10 +214,24 @@ func fileNotFound(req: HTTPRequest, resp: HTTPResponse) {
 	resp.completed(status: .notFound)
 }
 routes.add(uri: "/**", handler: fileNotFound)
+routes.add(uri: "/**", handler: fileNotFound)
+
+struct FilterCORS: HTTPResponseFilter {
+	func filterHeaders(response: HTTPResponse, callback: (HTTPResponseFilterResult) -> ()) {
+		response.setHeader(.custom(name: "Access-Control-Allow-Methods"), value: "GET,POST,PUT")
+		response.setHeader(.custom(name: "Access-Control-Allow-Origin"), value: "*")
+		callback(.continue)
+	}
+	func filterBody(response: HTTPResponse, callback: (HTTPResponseFilterResult) -> ()) {
+		callback(.continue)
+	}
+}
 
 //try HTTPServer.launch(.server(name: globalConfig.server.name, port: globalConfig.server.port, routes: routes))
 try HTTPServer.launch(.secureServer(TLSConfiguration(certPath: globalConfig.server.certPath, keyPath: globalConfig.server.keyPath),
-                                    name: globalConfig.server.name, port: globalConfig.server.port, routes: routes))
+                                    name: globalConfig.server.name, port: globalConfig.server.port, routes: routes,
+	responseFilters: [(FilterCORS(), HTTPFilterPriority.high)]
+	))
 
 
 
